@@ -1,22 +1,11 @@
 package com.example.springbootexam.service;
 
-import com.example.springbootexam.model.Review;
 import com.example.springbootexam.repository.UserDAO;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
 import com.example.springbootexam.model.User;
 
 import java.util.List;
-import java.util.Optional;
-
-/* private int id;
-    private String username;
-    private String email;
-    private String work;
-    private String password;
-
-    */
 @Service
 public class UserService {
    private final UserDAO userDAO;
@@ -24,25 +13,11 @@ public class UserService {
    public UserService (UserDAO userDAO){
        this.userDAO=userDAO;
    }
-    public User createUser(User user){
-    return userDAO.insert(user);
+    public User insert(User user){return userDAO.insert(user);}
+    public List<User> findAll(){return userDAO.findAll();}
+    public User updateOccupation(String newOccupation, int id){return userDAO.updateOccupation(newOccupation, id);}
+    public List<User> searchByOccupation(String occupation){return userDAO.searchByOccupation(occupation);}
+    public void deleteByUsername(String username){userDAO.deleteByUsername(username);}
+    public void deleteById(int id){userDAO.deleteById(id);}
+    public User getById(int id){return userDAO.getById(id);}
 }
-    public User getUserByWork(String work){
-        return userDAO.searchByWork(work);
-    }
-    public User changeWork(String newwork,String work){
-        return  userDAO.updatework(newwork,work);
-    }
-    public boolean getAllUser(){
-        System.out.println(userDAO.findAllUser());
-        return false;
-    }
-    public List<User> deleteByName(String username){
-        System.out.println(userDAO.deleteByUsername(username));
-        return null;
-    }
-    public List<User> deleteById(int id){
-        System.out.println(userDAO.deleteById(id));
-        return null;
-    }
-    }

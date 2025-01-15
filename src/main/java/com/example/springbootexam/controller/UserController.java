@@ -1,79 +1,62 @@
 package com.example.springbootexam.controller;
+
+import com.example.springbootexam.model.Promo;
 import com.example.springbootexam.model.User;
 import com.example.springbootexam.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Optional;
+
 @RestController
-@RequestMapping("/api")  // Ajout de l'annotation pour spécifier le préfixe commun
+@RequestMapping("/users")
 public class UserController {
-    private final UserService userService;  // Ajout du mot clé final
+
+    private final UserService userService;
 
     @Autowired
     public UserController(UserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping("/users")
-    public User insertUser(@RequestBody User user) {
-        return userService.createUser(user);
+    @PostMapping
+    public ResponseEntity<User> insertUser(@RequestBody User user) {
+        return ResponseEntity.ok(userService.insert(user));
     }
 
-    @GetMapping("/users")
-    public boolean getAllUsers() {  // Correction du type de retour, devrait être une liste
-        return userService.getAllUser();
+    @GetMapping
+    public ResponseEntity<List<User>> getAllUsers() {
+        return ResponseEntity.ok(userService.findAll());
     }
 
-    @GetMapping("/users/work/{work}")
-    public Optional<User> userByWork(@PathVariable String work) {
-        return Optional.ofNullable(userService.getUserByWork(work));
+    @PutMapping("/{work}")
+    public ResponseEntity<User> updateUserWork(@PathVariable String work, @PathVariable int id) {
+        return ResponseEntity.ok(userService.updateOccupation(work, id));
     }
 
-    @PutMapping("/users/work/{work}")
-    public User updateUserWork(@PathVariable String work, @RequestBody String newWork) {
-        return userService.changeWork(newWork, work);
+    @GetMapping("/{id}")
+    public ResponseEntity<User> getPromoById(@PathVariable int id) {
+        return Optional.ofNullable(userService.getById(id))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+    @GetMapping("/{id}")
+    public ResponseEntity<List<User>> getPromoByOccupation(@PathVariable String occupation) {
+        return Optional.ofNullable(userService.searchByOccupation(occupation))
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
-    @DeleteMapping("/users/name/{username}")
-    public List<User> deleteUserByName(@PathVariable String username) {
-        return userService.deleteByName(username);
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUserById(@PathVariable int id) {
+        userService.deleteById(id);
+        return ResponseEntity.noContent().build();
     }
-
-    @DeleteMapping("/users/id/{id}")
-    public List<User> deleteUserById(@PathVariable int id) {
-        return userService.deleteById(id);
+    @DeleteMapping("/{username}")
+    public ResponseEntity<Void> deleteUsername(@PathVariable String username) {
+        userService.deleteByUsername(username);
+        return ResponseEntity.noContent().build();
     }
 }
-/*
-public UserController(UserService userService){
-    this.userService=userService;
-}
-@PostMapping("/users")
-    public User insertUser(@RequestBody User user) {
-        return userService.createUser(user);
-    }
-    @GetMapping("/users")
-    public boolean getAllUser() {
-        return userService.getAllUser();
-    }
-
-    @GetMapping("/users/{work}")
-    public Optional<User> clientBywork(String work) {
-        return Optional.ofNullable(userService.getUserByWork(work));
-    }
-    @PutMapping("/users/{work}")
-
-    public User UpdateWork(@PathVariable String newwork, String work) {
-        return userService.changeWork(newwork, work);
-    }
-    @DeleteMapping("/review/{username}")
-    public  Optional<User> DeleteUser(@PathVariable String username){
-        return userService.deleteByName(username);
-    }
-    @DeleteMapping("/review/{id}")
-    public  Optional<User> DeleteUserbyId(@PathVariable int id){
-        return userService.deleteById(id);
-    }*/
-//}

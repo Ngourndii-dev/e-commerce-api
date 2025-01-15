@@ -5,6 +5,7 @@ import com.example.springbootexam.repository.OrderDAO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,17 +16,10 @@ public class OrderService {
     public OrderService(OrderDAO orderDAO) {
         this.orderDAO = orderDAO;
     }
-    public Order addOrder(Order order){
-        return orderDAO.insert(order);
-    }
-    public List<Order> OrderList(){
-        return orderDAO.findAllOrder();
-    }
-    public Order changeQuantity(int newquantity,int oldquantity){
-        return  orderDAO.updatequantity(newquantity,oldquantity);
-    }
-    public Optional<Order> deleteOrder(int orderid){
-        System.out.println(orderDAO.deleteOrder(orderid));
-        return null;
-    }
+    public Order insert(Order order){return orderDAO.insert(order);}
+    public List<Order> findAll(){return orderDAO.findAll();}
+    public Order getById(int id){return orderDAO.getById(id);}
+    public void deleteById(int id){orderDAO.deleteById(id);}
+    public Order updateQuantity(int id, int newQuantity){return orderDAO.updateQuantity(id, newQuantity);}
+    public List<Order> searchProduct(Date date){return orderDAO.searchProduct(date);}
 }

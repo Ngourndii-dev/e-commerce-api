@@ -13,13 +13,13 @@ import java.sql.Statement;
 import java.util.List;
 
 @Repository
-public class ECommerceDAO implements ECommerceDAOInterface{
+public class ECommerceDAO{
     private Connection connection;
 
     public ECommerceDAO(Connection connection){
         this.connection = connection;
     }
-    @Override
+
     public List<Product> listProduct() {
         Statement statement;
         ResultSet result=null;
@@ -40,7 +40,7 @@ public class ECommerceDAO implements ECommerceDAOInterface{
         }
         return null;
     }
-    @Override
+
     public ECommerce listCategory() {
         Statement statement;
         ResultSet result=null;
@@ -60,7 +60,7 @@ public class ECommerceDAO implements ECommerceDAOInterface{
         }
         return null;
     }
-    @Override
+
     public List<Client> listClient() {
         Statement statement;
         ResultSet result=null;
@@ -80,7 +80,7 @@ public class ECommerceDAO implements ECommerceDAOInterface{
         }
         return null;
     }
-    @Override
+
     public List<User> listBoss() {
         Statement statement;
         ResultSet result=null;
@@ -100,4 +100,5 @@ public class ECommerceDAO implements ECommerceDAOInterface{
         }
         return null;
     }
+
 }

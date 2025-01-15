@@ -4,148 +4,150 @@ import com.example.springbootexam.model.Client;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
-@Repository
-public class ClientDAO implements ClientDAOInterface{
-    private Connection connection;
 
-    public ClientDAO(Connection connection){
+@Repository
+public class ClientDAO implements CrudOperation<Client> {
+    private final Connection connection;
+
+    public ClientDAO(Connection connection) {
         this.connection = connection;
     }
 
-
     @Override
-    public Client insert (Client client){
-        String resultat;
-        String sql="INSERT INTO client(clientid,clientname,phonenumber) VALUES (?,?,?)";
-        try (PreparedStatement statement=connection.prepareStatement(sql)){
-            statement.setInt(1,client.getClientId());
-            statement.setString(2, client.getClientName());
-            statement.setString(3,client.getPhoneNumber());
-            statement.executeQuery();
-            System.out.println("Insertion reussit");
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
+    public Client insert(Client client) {
+        String sql = "INSERT INTO client (client_name, phone_number, email) VALUES (?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setString(1, client.getClientName());
+            statement.setString(2, client.getPhoneNumber());
+            statement.setString(3, client.getEmail());
+            int affectedRows = statement.executeUpdate();
+
+            if (affectedRows > 0) {
+                try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                    if (generatedKeys.next()) {
+                        client.setId(generatedKeys.getInt(1));
+                        System.out.println("Insertion réussie avec ID : " + client.getId());
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur d'insertion : " + e.getMessage());
         }
         return client;
     }
+
     @Override
     public List<Client> findAll() {
+        String query = "SELECT * FROM client";
+        List<Client> clients = new ArrayList<>();
+        try (Statement statement = connection.createStatement();
+             ResultSet result = statement.executeQuery(query)) {
+
+            while (result.next()) {
+                Client client = new Client(
+                        result.getInt("id"),
+                        result.getString("client_name"),
+                        result.getString("phone_number"),
+                        result.getString("email")
+                );
+                clients.add(client);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération : " + e.getMessage());
+        }
+        return clients;
+    }
+
+    @Override
+    public Client getById(int id) {
+        String query = "SELECT * FROM client WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            try (ResultSet rs = statement.executeQuery()) {
+                if (rs.next()) {
+                    return new Client(
+                            rs.getInt("id"),
+                            rs.getString("client_name"),
+                            rs.getString("phone_number"),
+                            rs.getString("email")
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur lors de la récupération : " + e.getMessage());
+        }
+        return null;
+    }
+
+    @Override
+    public void deleteById(int id) {
+        String query = "DELETE FROM client WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            int rows = statement.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Suppression réussie");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur de suppression : " + e.getMessage());
+        }
+    }
+
+
+    public Client updateClientName(String newClientName, int id) {
+        String sql = "UPDATE client SET client_name = ? WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, newClientName);
+            statement.setInt(2, id);
+            int rows = statement.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Update successfully");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error : " + e.getMessage());
+        }
+        return null;
+    }
+
+
+    public Client updatePhoneNumber(String newNumber, int id) {
+        String sql = "UPDATE client SET phone_number = ? WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setString(1, newNumber);
+            statement.setInt(2, id);
+            int rows = statement.executeUpdate();
+            if (rows > 0) {
+                System.out.println("Update successfully ");
+            }
+        } catch (SQLException e) {
+            System.out.println("Error : " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<Client> searchCart(String client){
+        List<Client> clientList=new ArrayList<>();
         Statement statement;
         ResultSet result=null;
         try{
-            String query=String.format("select * from client");
+            String query=String.format("SELECT * FROM client WHERE client_name ILIKE '%s' or phone_number ILIKE '%s' or email ILIKE '%s'",client);
             statement=connection.createStatement();
             result=statement.executeQuery(query);
             while(result.next()){
-                System.out.print(result.getString("clientname"));
-                System.out.print(" has ");
-                System.out.print(result.getString("phonenumber"));
-                System.out.print(" Number client : ");
-                System.out.println(result.getInt("clientid"));
+                clientList.add(new Client(
+                                result.getInt("id"),
+                                result.getString("client_name"),
+                                result.getString("phone_number"),
+                                result.getString("email")
+                        )
+                );
             }
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
-        return null;
+        return clientList;
     }
 
-    @Override
-    public Client updateClientName(String newclientName, String clientName) {
-        Statement statement;
-        try{
-            String sql=String.format("update client set clientname='%s' where clientname='%s'",newclientName,clientName);
-            statement=connection.createStatement();
-            statement.executeUpdate(sql);
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public Client updatephoneNumber(String newnumber, String phoneNumber) {
-        Statement statement;
-        try{
-            String sql=String.format("update client set phonenumber='%s' where phonenumber='%s'",newnumber,phoneNumber);
-            statement=connection.createStatement();
-            statement.executeUpdate(sql);
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public Client searchClientName(String clientName){
-        Statement statement;
-        ResultSet rs=null;
-        try{
-            String query=String.format("select * from client where clientname= '%s'",clientName);
-            statement=connection.createStatement();
-            rs= statement.executeQuery(query);
-            while(rs.next()){
-                System.out.print(rs.getInt("clientid")+" ");
-                System.out.print(rs.getString("clientname")+" ");
-                System.out.println(rs.getString("phonenumber"));
-            }
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-    @Override
-    public Client searchphoneNumber(String phoneNumber) {
-        Statement statement;
-        ResultSet rs=null;
-        try{
-            String query=String.format("select * from client where phonenumber= '%s'",phoneNumber);
-            statement=connection.createStatement();
-            rs= statement.executeQuery(query);
-            while(rs.next()){
-                System.out.print(rs.getInt("clientid")+" ");
-                System.out.print(rs.getString("clientname")+" ");
-                System.out.println(rs.getString("phonenumber"));
-            }
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        return null;
-    }
-
-    @Override
-    public boolean deleteClientName(int clientid) {
-        Statement statement;
-        try{
-            String query=String.format("delete from client where clientid='%s'",clientid);
-            statement=connection.createStatement();
-            statement.executeUpdate(query);
-            System.out.println("Data deleted");
-        }catch (Exception e){
-            System.out.println(e);
-        }
-        return false;
-    }
-
-    @Override
-    public List<Client> searchClients(String keyword) {
-        return null;
-    }
-
-    public static void main(String[] args) {
-        /*Client client2=new Client(2,"okoooj","8888");
-        //Cart natiora=new Cart(1,"abc","natiora",client);
-        //Connection connection1;
-        //CartDAOInterface dao=new CartDAO(DatabaseConfiguration.getConnection());
-        //dao.insert(ando);
-        //ClientDAOInterface dao=new ClientDAO((Connection) new DatabaseConfiguration());
-        //dao.insert(client);
-        //dao.insert(client2);
-        //dao.findAll();
-        //dao.updateCartType("aintsa","ndekzr");
-        //dao.updateCartUserCart("cvbh","ando");
-        //dao.findAll();
-        //dao.deleteClientName(1);
-        //dao.findAll();*/
-    }
 }

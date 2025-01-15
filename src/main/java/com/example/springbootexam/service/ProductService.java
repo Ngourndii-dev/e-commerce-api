@@ -16,31 +16,11 @@ public class ProductService {
     public ProductService(ProductDAO productDAO){
         this.productDAO=productDAO;
     }
-    public Product createProduct(Product product){
-        return productDAO.createProduct(product);
-
-    }
-    public List<Product> ProductList(){
-        return productDAO.findAllProduct();
-    }
-    public Product productByName(String productName){
-        return productDAO.searchProductname(productName);
-    }
-    public Product productByCategory(String category){
-        return productDAO.searchcategory(category);
-    }
-    public void getStock(){
-        productDAO.stockProduct();
-    }
-    public Product updateCategory(String newcategory, String category){
-        return  productDAO.updateCategory(newcategory,category);
-    }
-    public Optional<Product> deleteProductId(int productid){
-        System.out.println(productDAO.deleteByid(productid));
-        return null;
-    }
-    public Optional<Product> deleteProductname(String productname){
-        System.out.println(productDAO.deleteByname(productname));
-        return null;
-    }
+    public void stockProduct(){productDAO.stockProduct();}
+    public List<Product> findAll(){return productDAO.findAll();}
+    public Product updateCategory(String newCategory, int id){return productDAO.updateCategory(newCategory,id);}
+    public List<Product> searchProduct(String product){return productDAO.searchProduct(product);}
+    public void deleteById(int productId){productDAO.deleteById(productId);}
+    public Product insert(Product product){return productDAO.insert(product);}
+    public Product getById(int id){return productDAO.getById(id);}
 }

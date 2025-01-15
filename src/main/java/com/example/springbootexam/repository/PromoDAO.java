@@ -1,118 +1,130 @@
 package com.example.springbootexam.repository;
-
+import com.example.springbootexam.model.Product;
 import com.example.springbootexam.model.Promo;
-import com.example.springbootexam.model.User;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-@Repository
-public class PromoDAO implements PromoDAOInterface{
-    private Connection connection;
 
-    public PromoDAO(Connection connection){
+@Repository
+public class PromoDAO implements CrudOperation<Promo> {
+    private final Connection connection;
+
+    public PromoDAO(Connection connection) {
         this.connection = connection;
     }
 
-
     @Override
-    public Promo createPromo(Promo promo) {
-        String resultat;
-        String sql="INSERT INTO promo(promoid,expirationdate,category) VALUES (?,?,?)";
-        try (PreparedStatement statement=connection.prepareStatement(sql)){
-            statement.setInt(1,promo.getPromoid());
-            statement.setString(3,promo.getCategory());
-            statement.setDate(2, (java.sql.Date) promo.getExpirationDate());
-            statement.executeQuery();
-            System.out.println("Insertion reussit");
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
+    public Promo insert(Promo promo) {
+        String sql = "INSERT INTO promo(id_product, expiration_date, category) VALUES (?, ?, ?)";
+        try (PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            statement.setInt(1, promo.getProduct().getId());
+            statement.setDate(2, new java.sql.Date(promo.getExpirationDate().getTime()));
+            statement.setString(3, promo.getCategory());
+            statement.executeUpdate();
+
+            // Récupération de l'ID généré
+            try (ResultSet generatedKeys = statement.getGeneratedKeys()) {
+                if (generatedKeys.next()) {
+                    promo.setId(generatedKeys.getInt(1));
+                }
+            }
+            System.out.println("Promo inserted!");
+        } catch (SQLException e) {
+            System.err.println("Error during insertion: " + e.getMessage());
         }
         return promo;
     }
 
     @Override
-    public Promo searchPromo(int promoid) {
-        Statement statement;
-        ResultSet result=null;
-        try{
-            String query=String.format("select * from promo where promoid= '%s'",promoid);
-            statement=connection.createStatement();
-            result= statement.executeQuery(query);
-            while(result.next()){
-                System.out.println(result.getInt("promoid"));
-                System.out.println(result.getDate("expirationdate"));
-                System.out.println(result.getString("category"));
+    public Promo getById(int id) {
+        String query = "SELECT * FROM promo WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(query)) {
+            statement.setInt(1, id);
+            ResultSet result = statement.executeQuery();
+            return  new Promo(
+                    result.getInt("id"),
+                    result.getObject("id_product",Product.class),
+                    result.getDate("expiration_date"),
+                    result.getString("category")
+            );
+        } catch (SQLException e) {
+            System.err.println("Error during retrieval: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public Promo updatePromo(Date newExpiration, int id) {
+        String sql = "UPDATE promo SET expiration_date = ? WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setDate(1, new java.sql.Date(newExpiration.getTime()));
+            statement.setInt(2, id);
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated > 0) {
+                System.out.println("Expiration updated successfully.");
+                return getById(id);
             }
-        }catch (Exception e){
-            System.out.println(e.getMessage());
+        } catch (SQLException e) {
+            System.err.println("Error during update: " + e.getMessage());
         }
         return null;
     }
 
     @Override
-    public Promo updatePromo(Date newExpiration, Date expiration) {
-        Statement statement;
-        try{
-            String sql=String.format("update promo set expirationdate='%s' where expirationdate='%s'",newExpiration,expiration);
-            statement=connection.createStatement();
-            statement.executeUpdate(sql);
-        }catch (SQLException e){
-            System.out.println(e.getMessage());
+    public void deleteById(int promoId) {
+        String sql = "DELETE FROM promo WHERE id = ?";
+        try (PreparedStatement statement = connection.prepareStatement(sql)) {
+            statement.setInt(1, promoId);
+            int rowsDeleted = statement.executeUpdate();
+            if (rowsDeleted > 0) {
+                System.out.println("Promo deleted.");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error during deletion: " + e.getMessage());
         }
-        return null;
     }
 
     @Override
-    public boolean deletePromo(int promoid) {
-        Statement statement;
-        try{
-            String query=String.format("delete from promo where usercart='%s'",promoid);
-            statement=connection.createStatement();
-            statement.executeUpdate(query);
-            System.out.println("Data deleted");
-        }catch (Exception e){
-            System.out.println(e);
+    public List<Promo> findAll() {
+        List<Promo> promos = new ArrayList<>();
+        String query = "SELECT * FROM promo";
+        try (Statement statement = connection.createStatement();
+             ResultSet result = statement.executeQuery(query)) {
+            while (result.next()) {
+                Promo promo = new Promo(
+                result.getInt("id"),
+                result.getObject("id_product",Product.class),
+                result.getDate("expiration_date"),
+                result.getString("category")
+                );
+                promos.add(promo);
+            }
+        } catch (SQLException e) {
+            System.err.println("Error during retrieval of all promos: " + e.getMessage());
         }
-        return false;
+        return promos;
     }
 
-    @Override
-    public List<Promo> allPromo() {
+    public List<Promo> searchPromo(String category){
+        List<Promo> promoList=new ArrayList<>();
         Statement statement;
         ResultSet result=null;
         try{
-            String query=String.format("select * from promo");
+            String query=String.format("SELECT * FROM cart WHERE type_cart ILIKE '%s'",category);
             statement=connection.createStatement();
             result=statement.executeQuery(query);
-            while(result.next()){
-                System.out.println(result.getInt("promoid"));
-                System.out.println(result.getDate("expirationdate"));
-                System.out.println(result.getString("category"));
+            while(result.next()){promoList.add(new Promo(
+                                result.getInt("id"),
+                                result.getObject("id_product", Product.class),
+                                result.getDate("expiration_date"),
+                                result.getString("category")
+                        )
+                );
             }
         }catch (SQLException e){
             System.out.println(e.getMessage());
         }
-        return (List<Promo>) result;
-    }
-
-    @Override
-    public Promo searchcategorypromo(String category) {
-        Statement statement;
-        ResultSet result=null;
-        try{
-            String query=String.format("select * from promo where category= '%s'",category);
-            statement=connection.createStatement();
-            result= statement.executeQuery(query);
-            while(result.next()){
-                System.out.println(result.getInt("promoid"));
-                System.out.println(result.getDate("expirationdate"));
-                System.out.println(result.getString("category"));
-            }
-        }catch (Exception e){
-            System.out.println(e.getMessage());
-        }
-        return null;
+        return promoList;
     }
 }
