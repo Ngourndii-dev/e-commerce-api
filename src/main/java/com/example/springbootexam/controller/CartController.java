@@ -2,23 +2,20 @@ package com.example.springbootexam.controller;
 
 import com.example.springbootexam.model.Cart;
 import com.example.springbootexam.service.CartService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/cart")
+@AllArgsConstructor
 public class CartController {
-
+    @Autowired
     private final CartService cartService;
 
-    @Autowired
-    public CartController(CartService cartService) {
-        this.cartService = cartService;
-    }
 
     @PostMapping
     public ResponseEntity<Cart> insert(@RequestBody Cart cart) {

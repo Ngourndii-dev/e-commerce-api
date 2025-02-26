@@ -6,6 +6,7 @@ package com.example.springbootexam.controller;
 import com.example.springbootexam.model.Promo;
 import com.example.springbootexam.model.Review;
 import com.example.springbootexam.service.ReviewService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -15,14 +16,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/reviews")
+@AllArgsConstructor
 public class ReviewController {
-
+@Autowired
     private final ReviewService reviewService;
-
-    @Autowired
-    public ReviewController(ReviewService reviewService) {
-        this.reviewService = reviewService;
-    }
 
     @PostMapping
     public ResponseEntity<Review> insertReview(@RequestBody Review review) {

@@ -1,8 +1,7 @@
 package com.example.springbootexam.controller;
-
-import com.example.springbootexam.model.Promo;
 import com.example.springbootexam.model.User;
 import com.example.springbootexam.service.UserService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -12,14 +11,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/users")
+@AllArgsConstructor
 public class UserController {
-
+@Autowired
     private final UserService userService;
-
-    @Autowired
-    public UserController(UserService userService) {
-        this.userService = userService;
-    }
 
     @PostMapping
     public ResponseEntity<User> insertUser(@RequestBody User user) {
@@ -42,7 +37,7 @@ public class UserController {
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
-    @GetMapping("/{id}")
+    @GetMapping("/{occupation}")
     public ResponseEntity<List<User>> getPromoByOccupation(@PathVariable String occupation) {
         return Optional.ofNullable(userService.searchByOccupation(occupation))
                 .map(ResponseEntity::ok)

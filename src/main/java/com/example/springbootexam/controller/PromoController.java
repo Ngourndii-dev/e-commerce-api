@@ -2,6 +2,7 @@ package com.example.springbootexam.controller;
 
 import com.example.springbootexam.model.Promo;
 import com.example.springbootexam.service.PromoService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -10,14 +11,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/promo")
+@AllArgsConstructor
 public class PromoController {
-
+@Autowired
     private final PromoService promoService;
-
-    @Autowired
-    public PromoController(PromoService promoService) {
-        this.promoService = promoService;
-    }
 
     @PostMapping
     public ResponseEntity<Promo> insertPromo(@RequestBody Promo promo) {
@@ -28,7 +25,7 @@ public class PromoController {
     public ResponseEntity<List<Promo>> getAllPromos() {
         return ResponseEntity.ok(promoService.findAll());
     }
-    @GetMapping
+    @GetMapping("/{category}")
     public ResponseEntity<List<Promo>> searchByCategory(@PathVariable String category) {
         return ResponseEntity.ok(promoService.searchPromo(category));
     }

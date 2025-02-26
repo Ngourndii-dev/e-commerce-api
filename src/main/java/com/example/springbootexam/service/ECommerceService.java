@@ -5,6 +5,7 @@ import com.example.springbootexam.model.ECommerce;
 import com.example.springbootexam.model.Product;
 import com.example.springbootexam.model.User;
 import com.example.springbootexam.repository.ECommerceDAO;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Service;
@@ -12,12 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class ECommerceService {
-    private final ECommerceDAO eCommerceDAO;
     @Autowired
-    public ECommerceService(ECommerceDAO eCommerceDAO){
-        this.eCommerceDAO=eCommerceDAO;
-    }
+    private final ECommerceDAO eCommerceDAO;
+
     public List<Client> listClient(Client client){
         return eCommerceDAO.listClient();
     }

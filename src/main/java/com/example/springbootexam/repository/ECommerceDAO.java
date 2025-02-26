@@ -4,6 +4,8 @@ import com.example.springbootexam.model.Client;
 import com.example.springbootexam.model.ECommerce;
 import com.example.springbootexam.model.Product;
 import com.example.springbootexam.model.User;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.Connection;
@@ -13,12 +15,11 @@ import java.sql.Statement;
 import java.util.List;
 
 @Repository
+@AllArgsConstructor
 public class ECommerceDAO{
+    @Autowired
     private Connection connection;
 
-    public ECommerceDAO(Connection connection){
-        this.connection = connection;
-    }
 
     public List<Product> listProduct() {
         Statement statement;

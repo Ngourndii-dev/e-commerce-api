@@ -2,6 +2,8 @@ package com.example.springbootexam.repository;
 
 import com.example.springbootexam.model.Product;
 import com.example.springbootexam.model.Review;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -9,13 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@AllArgsConstructor
 public class ReviewDAO implements CrudOperation<Review> {
+    @Autowired
     private final Connection connection;
-
-    public ReviewDAO(Connection connection) {
-        this.connection = connection;
-    }
-
     @Override
     public Review insert(Review review) {
         String sql = "INSERT INTO review (author, id_product, rating, comment) VALUES (?, ?, ?, ?)";

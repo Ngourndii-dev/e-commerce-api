@@ -1,6 +1,8 @@
 package com.example.springbootexam.repository;
 import com.example.springbootexam.model.Product;
 import com.example.springbootexam.model.Promo;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -8,12 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@AllArgsConstructor
 public class PromoDAO implements CrudOperation<Promo> {
+    @Autowired
     private final Connection connection;
-
-    public PromoDAO(Connection connection) {
-        this.connection = connection;
-    }
 
     @Override
     public Promo insert(Promo promo) {

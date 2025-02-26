@@ -1,10 +1,9 @@
 
-// ProductController.java
 package com.example.springbootexam.controller;
 
 import com.example.springbootexam.model.Product;
-import com.example.springbootexam.model.Promo;
 import com.example.springbootexam.service.ProductService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -14,14 +13,10 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/product")
+@AllArgsConstructor
 public class ProductController {
-
-    private final ProductService productService;
-
     @Autowired
-    public ProductController(ProductService productService) {
-        this.productService = productService;
-    }
+    private final ProductService productService;
 
     @PostMapping
     public ResponseEntity<Product> insertProduct(@RequestBody Product product) {

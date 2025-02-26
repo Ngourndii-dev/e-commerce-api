@@ -4,6 +4,7 @@ import com.example.springbootexam.model.Client;
 import com.example.springbootexam.model.Order;
 import com.example.springbootexam.model.Product;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -12,12 +13,10 @@ import java.util.List;
 @AllArgsConstructor
 @Repository
 public class OrderDAO implements CrudOperation<Order> {
+    @Autowired
     private final Connection connection;
     private ClientDAO clientDAO;
     private ProductDAO productDAO;
-    public OrderDAO(Connection connection) {
-        this.connection = connection;
-    }
     @Override
     public Order insert(Order order) {
         String sql = "INSERT INTO orders (order_date, status, quantity, total_price, id_client, id_product) " +

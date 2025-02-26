@@ -1,15 +1,20 @@
 package com.example.springbootexam.repository;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
+
 @Configuration
 @ComponentScan
-public class  DatabaseConfiguration {
+@PropertySource("classpath:application.properties")
+public class DatabaseConfiguration {
+
     @Value("${DB_URL}")
     private String dbUrl;
 
@@ -21,12 +26,6 @@ public class  DatabaseConfiguration {
 
     @Bean
     public Connection getConnection() throws SQLException {
-        return DriverManager.getConnection(this.dbUrl, this.dbUsername, this.dbPassword);
+        return DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
     }
-
-    public static void main(String[] args) {
-
-    }
-
 }
-

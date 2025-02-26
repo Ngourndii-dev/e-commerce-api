@@ -2,6 +2,8 @@ package com.example.springbootexam.repository;
 
 import com.example.springbootexam.model.Cart;
 import com.example.springbootexam.model.Client;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -9,11 +11,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@AllArgsConstructor
 public class CartDAO implements CrudOperation<Cart> {
+    @Autowired
     private final Connection connection;
-    public CartDAO(Connection connection) {
-        this.connection = connection;
-    }
     @Override
     public Cart insert(Cart cart) {
         String sql = "INSERT INTO cart (reference, type_cart, id_client) VALUES (?, ?, ?)";
@@ -95,7 +96,6 @@ public class CartDAO implements CrudOperation<Cart> {
         Client client = new Client();
         client.setId(rs.getInt("id_client"));
         cart.setClient(client);
-
         return cart;
     }
 

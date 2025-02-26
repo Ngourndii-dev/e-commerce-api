@@ -1,6 +1,8 @@
 package com.example.springbootexam.repository;
 
 import com.example.springbootexam.model.Client;
+import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -8,12 +10,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Repository
+@AllArgsConstructor
 public class ClientDAO implements CrudOperation<Client> {
+    @Autowired
     private final Connection connection;
-
-    public ClientDAO(Connection connection) {
-        this.connection = connection;
-    }
 
     @Override
     public Client insert(Client client) {

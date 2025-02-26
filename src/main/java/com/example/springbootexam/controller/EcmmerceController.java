@@ -2,20 +2,18 @@ package com.example.springbootexam.controller;
 
 import com.example.springbootexam.model.*;
 import com.example.springbootexam.service.ECommerceService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/ecommerce")
+@AllArgsConstructor
 public class EcmmerceController {
-
+    @Autowired
     private final ECommerceService eCommerceService;
 
-    @Autowired
-    public EcmmerceController(ECommerceService eCommerceService) {
-        this.eCommerceService = eCommerceService;
-    }
 
     @PostMapping("/client")
     public ResponseEntity<ECommerce> addClient(@RequestBody Client client) {

@@ -1,19 +1,17 @@
 package com.example.springbootexam.service;
 import com.example.springbootexam.model.Cart;
 import com.example.springbootexam.repository.CartDAO;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
+@AllArgsConstructor
 public class CartService {
-    private final CartDAO cartDAO;
     @Autowired
-    public CartService(CartDAO cartDAO){
-        this.cartDAO=cartDAO;
-    }
-
+    private final CartDAO cartDAO;
     public Cart insert(Cart cart){
         return cartDAO.insert(cart);
     }

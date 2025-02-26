@@ -2,6 +2,7 @@ package com.example.springbootexam.repository;
 
 import com.example.springbootexam.model.User;
 import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import java.sql.*;
@@ -11,11 +12,8 @@ import java.util.List;
 @Repository
 @AllArgsConstructor
 public class UserDAO implements CrudOperation<User> {
+    @Autowired
     private final Connection connection;
-
-    public UserDAO(Connection connection) {
-        this.connection = connection;
-    }
     @Override
     public User insert(User user) {
         String sql = "INSERT INTO users (username, email, occupation, password) VALUES (?, ?, ?, ?)";

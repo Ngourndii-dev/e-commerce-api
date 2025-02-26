@@ -1,12 +1,11 @@
-const { Client } = require('pg'); // Module pg pour interagir avec PostgreSQL
-const faker = require('faker');   // Module Faker.js pour générer des données aléatoires
+const { Client } = require('pg');
+const faker = require('@faker-js/faker');
 
-// Connexion à la base de données PostgreSQL
 const client = new Client({
     host: 'localhost',
     port: 5432,
-    user: 'your_user', // Remplace par ton nom d'utilisateur PostgreSQL
-    password: 'your_password', // Remplace par ton mot de passe PostgreSQL
+    user: 'postgres',
+    password: '1234',
     database: 'commerce_api',
 });
 
@@ -14,10 +13,9 @@ client.connect()
     .then(() => console.log('Connected to the database'))
     .catch(err => console.error('Connection error', err.stack));
 
-// Génération et insertion de données pour la table 'users'
 async function insertUsers() {
     for (let i = 0; i < 50; i++) {
-        const username = faker.internet.userName();
+        const username = faker.internet.name();
         const email = faker.internet.email();
         const occupation = faker.name.jobTitle();
         const password = faker.internet.password();
@@ -37,7 +35,6 @@ async function insertUsers() {
     }
 }
 
-// Génération et insertion de données pour la table 'product'
 async function insertProducts() {
     const statuses = ['append', 'available', 'unavailable'];
 
@@ -63,12 +60,12 @@ async function insertProducts() {
     }
 }
 
-// Génération et insertion de données pour la table 'review'
+
 async function insertReviews() {
     for (let i = 0; i < 50; i++) {
         const author = faker.name.findName();
-        const id_product = Math.floor(Math.random() * 50) + 1; // ID produit entre 1 et 50
-        const rating = Math.floor(Math.random() * 5) + 1; // Note entre 1 et 5
+        const id_product = Math.floor(Math.random() * 50) + 1;
+        const rating = Math.floor(Math.random() * 5) + 1;
         const comment = faker.lorem.sentence();
 
         const query = `
@@ -86,10 +83,10 @@ async function insertReviews() {
     }
 }
 
-// Génération et insertion de données pour la table 'promo'
+
 async function insertPromos() {
     for (let i = 0; i < 50; i++) {
-        const id_product = Math.floor(Math.random() * 50) + 1; // ID produit entre 1 et 50
+        const id_product = Math.floor(Math.random() * 50) + 1;
         const expiration_date = faker.date.future();
         const category = faker.commerce.department();
 
@@ -108,7 +105,6 @@ async function insertPromos() {
     }
 }
 
-// Génération et insertion de données pour la table 'client'
 async function insertClients() {
     for (let i = 0; i < 50; i++) {
         const client_name = faker.name.findName();
@@ -130,15 +126,15 @@ async function insertClients() {
     }
 }
 
-// Génération et insertion de données pour la table 'orders'
+
 async function insertOrders() {
     for (let i = 0; i < 50; i++) {
         const order_date = faker.date.past();
-        const status = Math.random() > 0.5; // 50% de chance d'être true ou false
-        const quantity = Math.floor(Math.random() * 10) + 1; // Quantité entre 1 et 10
+        const status = Math.random() > 0.5;
+        const quantity = Math.floor(Math.random() * 10) + 1;
         const total_price = parseFloat(faker.commerce.price()) * quantity;
-        const id_client = Math.floor(Math.random() * 50) + 1; // ID client entre 1 et 50
-        const id_product = Math.floor(Math.random() * 50) + 1; // ID produit entre 1 et 50
+        const id_client = Math.floor(Math.random() * 50) + 1;
+        const id_product = Math.floor(Math.random() * 50) + 1;
 
         const query = `
             INSERT INTO orders (order_date, status, quantity, total_price, id_client, id_product)
@@ -155,12 +151,11 @@ async function insertOrders() {
     }
 }
 
-// Génération et insertion de données pour la table 'cart'
 async function insertCarts() {
     for (let i = 0; i < 50; i++) {
         const reference = faker.datatype.number();
         const type_cart = faker.random.arrayElement(['regular', 'express']);
-        const id_client = Math.floor(Math.random() * 50) + 1; // ID client entre 1 et 50
+        const id_client = Math.floor(Math.random() * 50) + 1;
 
         const query = `
             INSERT INTO cart (reference, type_cart, id_client)
@@ -177,7 +172,6 @@ async function insertCarts() {
     }
 }
 
-// Appel des fonctions pour insérer les données
 async function insertData() {
     await insertUsers();
     await insertProducts();

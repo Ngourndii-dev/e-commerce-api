@@ -2,6 +2,7 @@ package com.example.springbootexam.controller;
 
 import com.example.springbootexam.model.Client;
 import com.example.springbootexam.service.ClientService;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,14 +12,11 @@ import java.util.Optional;
 
 @RestController
 @RequestMapping("/client")
+@AllArgsConstructor
 public class ClientController {
-
+    @Autowired
     private final ClientService clientService;
 
-    @Autowired
-    public ClientController(ClientService clientService) {
-        this.clientService = clientService;
-    }
     @GetMapping
     public ResponseEntity<List<Client>> getAllPromos() {
         return ResponseEntity.ok(clientService.findAll());
