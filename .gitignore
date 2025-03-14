@@ -1,10 +1,17 @@
-HELP.md
+# Ignorer le répertoire target/ (généré par Maven)
 target/
-!.mvn/wrapper/maven-wrapper.jar
+
+# Exceptions pour certains fichiers dans target/
 !**/src/main/**/target/
 !**/src/test/**/target/
-!**src/main/resources/application.properties
-### STS ###
+
+# Ignorer le wrapper Maven (sauf le fichier JAR)
+!.mvn/wrapper/maven-wrapper.jar
+
+# Ignorer le fichier application.properties dans src/main/resources
+!**/src/main/resources/application.properties
+
+### STS (Spring Tool Suite) ###
 .apt_generated
 .classpath
 .factorypath
@@ -25,7 +32,11 @@ target/
 /dist/
 /nbdist/
 /.nb-gradle/
+
+# Ignorer le répertoire build/ (généré par Gradle)
 build/
+
+# Exceptions pour certains fichiers dans build/
 !**/src/main/**/build/
 !**/src/test/**/build/
 
