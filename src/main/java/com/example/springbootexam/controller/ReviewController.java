@@ -1,9 +1,4 @@
-
-
-
 package com.example.springbootexam.controller;
-
-import com.example.springbootexam.model.Promo;
 import com.example.springbootexam.model.Review;
 import com.example.springbootexam.service.ReviewService;
 import lombok.AllArgsConstructor;
@@ -15,10 +10,10 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/reviews")
+@RequestMapping("/reviews")
 @AllArgsConstructor
 public class ReviewController {
-@Autowired
+    @Autowired
     private final ReviewService reviewService;
 
     @PostMapping

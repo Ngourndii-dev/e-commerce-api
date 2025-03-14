@@ -41,7 +41,7 @@ public class ReviewDAO implements CrudOperation<Review> {
     public List<Review> findAll() {
         List<Review> reviews = new ArrayList<>();
         String sql = "SELECT r.id, r.author, r.id_product, r.rating, r.comment, p.product_name, p.price FROM review r " +
-                "JOIN product p ON r.id_product = p.id";
+                " JOIN product p ON r.id_product = p.id";
         try (Statement statement = connection.createStatement();
              ResultSet result = statement.executeQuery(sql)) {
             while (result.next()) {

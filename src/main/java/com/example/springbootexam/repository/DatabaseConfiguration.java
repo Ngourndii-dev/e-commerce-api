@@ -28,4 +28,5 @@ public class DatabaseConfiguration {
     public Connection getConnection() throws SQLException {
         return DriverManager.getConnection(dbUrl, dbUsername, dbPassword);
     }
+
 }
